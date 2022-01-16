@@ -76,10 +76,10 @@ class Running(Training):
         coeff_calories_1 = 18
         coeff_calories_2 = 20
         time_in_min = self.duration * 60
-        spent_calories = ((coeff_calories_1 * self.get_mean_speed() -
-                          coeff_calories_2) *
-                          self.weight / self.m_in_km *
-                          time_in_min)
+        spent_calories = ((coeff_calories_1 * self.get_mean_speed()
+                          - coeff_calories_2)
+                          * self.weight / self.m_in_km
+                          * time_in_min)
         return spent_calories
 
 
@@ -101,11 +101,11 @@ class SportsWalking(Training):
         coeff_calories_2 = 2
         coeff_calories_3 = 0.029
         time_in_min = self.duration * 60
-        spent_calories = ((coeff_calories_1 * self.weight +
-                          (self.get_mean_speed() ** coeff_calories_2 //
-                           self.hight) *
-                          coeff_calories_3 * self.weight) *
-                          time_in_min)
+        spent_calories = (
+            (coeff_calories_1 * self.weight
+             + (self.get_mean_speed() ** coeff_calories_2 // self.hight)
+             * coeff_calories_3 * self.weight) * time_in_min
+        )
         return spent_calories
 
 
@@ -126,16 +126,16 @@ class Swimming(Training):
         self.count_pool = count_pool
 
     def get_mean_speed(self) -> float:
-        mean_speed = (self.length_pool *
-                      self.count_pool / self.m_in_km /
-                      self.duration)
+        mean_speed = (self.length_pool
+                      * self.count_pool / self.m_in_km
+                      / self.duration)
         return mean_speed
 
     def get_spent_calories(self) -> float:
         coeff_calories_1 = 1.1
         coeff_calories_2 = 2
-        spent_calories = ((self.get_mean_speed() + coeff_calories_1) *
-                          coeff_calories_2 * self.weight)
+        spent_calories = ((self.get_mean_speed() + coeff_calories_1)
+                          * coeff_calories_2 * self.weight)
         return spent_calories
 
 
