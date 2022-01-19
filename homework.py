@@ -1,17 +1,14 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: int,
-                 ) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: int
 
     def get_message(self) -> str:
         return (f'Тип тренировки: {self.training_type}; '
@@ -22,20 +19,16 @@ class InfoMessage:
                 )
 
 
+@dataclass
 class Training:
     """Базовый класс тренировки."""
     LEN_STEP = 0.65
     M_IN_KM = 1000
     training_type = 'Не определен'
 
-    def __init__(self,
-                 action: int,
-                 duration: float,
-                 weight: float,
-                 ) -> None:
-        self.action = action
-        self.duration = duration
-        self.weight = weight
+    action: int
+    duration: float
+    weight: float
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
@@ -64,6 +57,8 @@ class Training:
 class Running(Training):
     """Тренировка: бег."""
     training_type = 'Running'
+    coeff_calories_for_run_1 = 18
+    coeff_calories_for_run_2 = 20
 
     def __init__(self,
                  action: int,
@@ -73,11 +68,10 @@ class Running(Training):
         super().__init__(action, duration, weight)
 
     def get_spent_calories(self) -> float:
-        coeff_calories_1 = 18
-        coeff_calories_2 = 20
         time_in_min = self.duration * 60
-        spent_calories = ((coeff_calories_1 * self.get_mean_speed()
-                          - coeff_calories_2)
+        spent_calories = ((self.coeff_calories_for_run_1
+                          * self.get_mean_speed()
+                          - self.coeff_calories_for_run_2)
                           * self.weight / self.M_IN_KM
                           * time_in_min)
         return spent_calories
@@ -86,6 +80,9 @@ class Running(Training):
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
     training_type = 'SportsWalking'
+    coeff_calories_for_walk_1 = 0.035
+    coeff_calories_for_walk_2 = 0.029
+    degree = 2
 
     def __init__(self,
                  action: int,
@@ -97,14 +94,11 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        coeff_calories_1 = 0.035
-        coeff_calories_2 = 2
-        coeff_calories_3 = 0.029
         time_in_min = self.duration * 60
         spent_calories = (
-            (coeff_calories_1 * self.weight
-             + (self.get_mean_speed() ** coeff_calories_2 // self.height)
-             * coeff_calories_3 * self.weight) * time_in_min
+            (self.coeff_calories_for_walk_1 * self.weight
+             + (self.get_mean_speed() ** self.degree // self.height)
+             * self.coeff_calories_for_walk_2 * self.weight) * time_in_min
         )
         return spent_calories
 
@@ -113,6 +107,8 @@ class Swimming(Training):
     """Тренировка: плавание."""
     training_type = 'Swimming'
     LEN_STEP = 1.38
+    coeff_calories_for_swim_1 = 1.1
+    coeff_calories_for_swim_2 = 2
 
     def __init__(self,
                  action: int,
@@ -132,10 +128,9 @@ class Swimming(Training):
         return mean_speed
 
     def get_spent_calories(self) -> float:
-        coeff_calories_1 = 1.1
-        coeff_calories_2 = 2
-        spent_calories = ((self.get_mean_speed() + coeff_calories_1)
-                          * coeff_calories_2 * self.weight)
+        spent_calories = ((self.get_mean_speed()
+                          + self.coeff_calories_for_swim_1)
+                          * self.coeff_calories_for_swim_2 * self.weight)
         return spent_calories
 
 
@@ -185,6 +180,9 @@ if __name__ == '__main__':
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
     ]
+#   workout_dict = {}
+#   workout_dict[packages[0]] = packages[1]
+#   print(workout_dict.keys())
 
     for workout_type, data in packages:
         training = read_package(workout_type, data)
