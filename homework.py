@@ -135,36 +135,16 @@ class Swimming(Training):
 
 
 def read_package(workout_type: str, data: list) -> Training:
-    """Прочитать данные полученные от датчиков."""
-    if workout_type == 'SWM':
-        action = data[0]
-        duration = data[1]
-        weight = data[2]
-        lenght_pool = data[3]
-        count_pool = data[4]
-        return Swimming(action,
-                        duration,
-                        weight,
-                        lenght_pool,
-                        count_pool)
-
-    if workout_type == 'RUN':
-        action = data[0]
-        duration = data[1]
-        weight = data[2]
-        return Running(action,
-                       duration,
-                       weight)
-
-    if workout_type == 'WLK':
-        action = data[0]
-        duration = data[1]
-        weight = data[2]
-        height = data[3]
-        return SportsWalking(action,
-                             duration,
-                             weight,
-                             height)
+    workout_dict = {
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking
+    }
+    if workout_type not in workout_dict:
+        print(f'Error. Ключи {workout_dict.keys()} не найдены')
+    else:
+        data_class = workout_dict[workout_type]
+        return data_class(*data)
 
 
 def main(training: Training) -> None:
@@ -180,10 +160,6 @@ if __name__ == '__main__':
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
     ]
-#   workout_dict = {}
-#   workout_dict[packages[0]] = packages[1]
-#   print(workout_dict.keys())
-
     for workout_type, data in packages:
         training = read_package(workout_type, data)
         main(training)
