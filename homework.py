@@ -134,14 +134,16 @@ class Swimming(Training):
         return spent_calories
 
 
+workout_dict = {
+    'SWM': Swimming,
+    'RUN': Running,
+    'WLK': SportsWalking
+}
+
+
 def read_package(workout_type: str, data: list) -> Training:
-    workout_dict = {
-        'SWM': Swimming,
-        'RUN': Running,
-        'WLK': SportsWalking
-    }
     if workout_type not in workout_dict:
-        print(f'Error. Ключи {workout_dict.keys()} не найдены')
+        raise ValueError(f'Error. Ключи {workout_dict.keys()} не найдены')
     else:
         data_class = workout_dict[workout_type]
         return data_class(*data)
